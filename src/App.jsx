@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
 
 // ---------------------------------------------------------------------------
@@ -83,6 +83,21 @@ const Award = ({ size = 20, className = "" }) => (
   </svg>
 );
 
+const Briefcase = ({ size = 20, className = "" }) => (
+  <svg {...iconProps(size)} className={className}>
+    <rect x="2" y="7" width="20" height="14" rx="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const FileCheck = ({ size = 20, className = "" }) => (
+  <svg {...iconProps(size)} className={className}>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <path d="M14 2v6h6" />
+    <path d="m9 15 2 2 4-4" />
+  </svg>
+);
+
 // ---------------------------------------------------------------------------
 // EDIT ME: all your personal content lives in this block.
 // ---------------------------------------------------------------------------
@@ -149,6 +164,51 @@ const SKILLS = [
       { name: "Postman", detail: "Testing and debugging API endpoints during development." },
       { name: "Figma", detail: "Reading designs and occasionally sketching quick UI mockups." },
     ],
+  },
+];
+
+const EXPERIENCE = [
+  {
+    company: "Technex'25 IIT (BHU)-Varanasi (Internship) with Robokwik",
+    role: "Full-Stack & AI Developer",
+    duration: "April 2025 - June 2025 (Duration: 3 months)",
+    summary:
+      "Designing and shipping end-to-end applications that combine web development with practical AI integrations.",
+    highlights: [
+      "Built a full-stack Student Management System with webcam-based data capture using React, Flask, and MongoDB",
+      "Developed an AI-powered stock analysis mobile app with Flutter, integrating the OpenAI API for predictive insights",
+      "Designed a Zero-Trust Authentication API using behavioral biometrics and a dynamic risk engine",
+    ],
+    tech: ["React", "Flask", "MongoDB", "Flutter", "OpenAI API", "Python"],
+    certificate: "https://drive.google.com/file/d/1zuVxxxR1DAn7fGB90XhQwE-3mB3DgaE9/view?usp=drivesdk",
+  },
+  {
+    company: "Edunet Foundation || Collaboration with IBM SkillsBuild",
+    role: "AI/ML Explorer",
+    duration: "June 2025 - August 2025 (Duration: 2 months)",
+    summary:
+      "Continuously building hands-on familiarity with modern AI tooling through personal projects and coursework.",
+    highlights: [
+      "Experimented with RAG pipelines and LangChain for applied LLM projects",
+      "Practiced core machine learning workflows using scikit-learn in Google Colab",
+      "Studied cloud deployment basics across GCP and Azure for personal projects",
+    ],
+    tech: ["LangChain", "scikit-learn", "Google Colab", "GCP", "Azure"],
+    certificate: "https://drive.google.com/file/d/1UTt0xVE_QuBjVf3ZH9v1aPJ1KYFTHaEP/view?usp=drivesdk",
+  },
+  {
+    company: "JobSense With MIT (Internship)",
+    role: "Full-Stack Developer",
+    duration: "July 2024 - August 2024 (Duration: 1 month)",
+    summary:
+      "Developed and deployed web applications, focusing on both frontend and backend integration.",
+    highlights: [
+      "Built a responsive web application for job seekers using React and Node.js",
+      "Implemented RESTful APIs and integrated with a MongoDB database for dynamic content",
+      "Deployed the application on a cloud platform, ensuring scalability and performance",
+    ],
+    tech: ["React", "Node.js", "MongoDB", "Tailwindcss", "Cloud Deployment"],
+    certificate: "https://drive.google.com/file/d/1zwUnjOTkKqPQZb6B9qrh1hzrWrFuC-zK/view?usp=drivesdk",
   },
 ];
 
@@ -262,6 +322,7 @@ function Section({ id, className = "", children }) {
   );
 }
 
+// Works on hover (desktop) AND tap (mobile) — click toggles the tooltip
 function SkillChip({ name, detail }) {
   const [open, setOpen] = useState(false);
   return (
@@ -271,26 +332,31 @@ function SkillChip({ name, detail }) {
         whileTap={{ scale: 0.97 }}
         onHoverStart={() => setOpen(true)}
         onHoverEnd={() => setOpen(false)}
-        className="inline-block text-sm px-3 py-1 rounded-full bg-[#E8EDFC] text-[#2451E0] font-medium cursor-default select-none"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-block text-sm px-3 py-1 rounded-full bg-[#E8EDFC] text-[#2451E0] font-medium cursor-pointer select-none"
       >
         {name}
       </motion.span>
 
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: 6, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.15 }}
-          className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 z-20 p-3 rounded-xl bg-[#14171A] text-white text-xs leading-relaxed shadow-lg"
-        >
-          {detail}
-          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#14171A] rotate-45" />
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 z-20 p-3 rounded-xl bg-[#14171A] text-white text-xs leading-relaxed shadow-lg"
+          >
+            {detail}
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#14171A] rotate-45" />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
+// Works on hover (desktop) AND tap (mobile) — tapping the title toggles the card
 function EducationCard({ entry, index, isLast }) {
   const [open, setOpen] = useState(false);
 
@@ -316,48 +382,301 @@ function EducationCard({ entry, index, isLast }) {
 
       <div className="pb-2 flex-1 relative">
         <p className="font-mono text-xs text-[#5B6472] mb-1">{entry.year}</p>
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => setOpen((v) => !v)}
+        >
           <h3 className="font-display font-semibold text-base">{entry.title}</h3>
           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#E8EDFC] text-[#2451E0]">
-            hover for details
+            tap for details
           </span>
         </div>
         <p className="text-sm text-[#5B6472]">{entry.place}</p>
 
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute left-0 top-full mt-3 w-full max-w-sm z-30 p-5 rounded-2xl bg-white border border-[#E4E7EB] shadow-[0_12px_32px_-8px_rgba(20,23,26,0.18)]"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2 text-[#2451E0]">
-                <Award size={18} />
-                <span className="font-mono text-xs uppercase tracking-widest">
-                  {entry.scoreLabel}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="absolute left-0 top-full mt-3 w-full max-w-sm z-30 p-5 rounded-2xl bg-white border border-[#E4E7EB] shadow-[0_12px_32px_-8px_rgba(20,23,26,0.18)]"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-[#2451E0]">
+                  <Award size={18} />
+                  <span className="font-mono text-xs uppercase tracking-widest">
+                    {entry.scoreLabel}
+                  </span>
+                </div>
+                <span className="font-display font-semibold text-lg text-[#14171A]">
+                  {entry.score}
                 </span>
               </div>
-              <span className="font-display font-semibold text-lg text-[#14171A]">
-                {entry.score}
-              </span>
+
+              <p className="text-sm text-[#5B6472] leading-relaxed mb-4">
+                {entry.description}
+              </p>
+
+              <ul className="space-y-2">
+                {entry.highlights.map((h, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-[#14171A]">
+                    <span className="text-[#2451E0] mt-1">•</span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
+// Experience — interactive tabbed panel. Click a role to reveal its details.
+function ExperienceSection() {
+  const [active, setActive] = useState(0);
+  const current = EXPERIENCE[active];
+
+  return (
+    <div className="grid md:grid-cols-[minmax(0,240px)_1fr] gap-6 md:gap-10">
+      <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+        {EXPERIENCE.map((exp, i) => (
+          <button
+            key={exp.company}
+            onClick={() => setActive(i)}
+            className={`relative text-left px-4 py-3 rounded-xl whitespace-nowrap md:whitespace-normal shrink-0 transition-colors ${
+              active === i
+                ? "bg-[#14171A] text-white"
+                : "bg-white text-[#5B6472] border border-[#E4E7EB] hover:border-[#2451E0]"
+            }`}
+          >
+            {active === i && (
+              <motion.div
+                layoutId="exp-active-pill"
+                className="absolute inset-0 rounded-xl bg-[#14171A]"
+                style={{ zIndex: -1 }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
+            <p className="font-mono text-[10px] uppercase tracking-widest opacity-70 mb-0.5">
+              {exp.duration}
+            </p>
+            <p className="font-display font-semibold text-sm">{exp.company}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="relative min-h-[280px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="p-6 md:p-8 rounded-2xl bg-white border border-[#E4E7EB]"
+          >
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-9 h-9 rounded-full bg-[#E8EDFC] flex items-center justify-center shrink-0">
+                <Briefcase size={16} className="text-[#2451E0]" />
+              </div>
+              <div>
+                <h3 className="font-display font-semibold text-lg leading-tight">
+                  {current.role}
+                </h3>
+                <p className="text-sm text-[#5B6472]">{current.company}</p>
+              </div>
             </div>
 
-            <p className="text-sm text-[#5B6472] leading-relaxed mb-4">
-              {entry.description}
+            <p className="text-sm text-[#5B6472] leading-relaxed mt-4 mb-4">
+              {current.summary}
             </p>
 
-            <ul className="space-y-2">
-              {entry.highlights.map((h, i) => (
-                <li key={i} className="flex gap-2 text-sm text-[#14171A]">
+            <ul className="space-y-2 mb-5">
+              {current.highlights.map((h, i) => (
+                <motion.li
+                  key={h}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
+                  className="flex gap-2 text-sm text-[#14171A]"
+                >
                   <span className="text-[#2451E0] mt-1">•</span>
                   <span>{h}</span>
-                </li>
+                </motion.li>
               ))}
             </ul>
+
+            <div className="flex flex-wrap gap-2">
+              {current.tech.map((t) => (
+                <span
+                  key={t}
+                  className="font-mono text-xs px-2 py-1 rounded bg-[#F6F7F9] text-[#5B6472]"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            {current.certificate && (
+              <motion.a
+                href={current.certificate}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 mt-5 px-4 py-2 rounded-full bg-[#E8EDFC] text-[#2451E0] text-sm font-medium hover:bg-[#dbe3fb] transition-colors"
+              >
+                <FileCheck size={16} /> View Certificate
+              </motion.a>
+            )}
           </motion.div>
-        )}
+        </AnimatePresence>
       </div>
+    </div>
+  );
+}
+
+function useTerminalTyper(lines, speed = 16, lineDelay = 260) {
+  const [lineIdx, setLineIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+
+  useEffect(() => {
+    if (lineIdx >= lines.length) return;
+    const currentLine = lines[lineIdx];
+    if (charIdx < currentLine.length) {
+      const t = setTimeout(() => setCharIdx((c) => c + 1), speed);
+      return () => clearTimeout(t);
+    } else {
+      const t = setTimeout(() => {
+        setLineIdx((i) => i + 1);
+        setCharIdx(0);
+      }, lineDelay);
+      return () => clearTimeout(t);
+    }
+  }, [lineIdx, charIdx, lines, speed, lineDelay]);
+
+  const displayed = lines.map((line, i) => {
+    if (i < lineIdx) return line;
+    if (i === lineIdx) return line.slice(0, charIdx);
+    return "";
+  });
+
+  return { displayed, done: lineIdx >= lines.length };
+}
+
+function TerminalContactModal({ profile, onClose }) {
+  const [copied, setCopied] = useState(false);
+
+  const lines = useState(() => [
+    "$ contact --sagar",
+    "> resolving contact channels...",
+    `> email    : ${profile.email}`,
+    `> github    : ${profile.github.replace("https://", "")}`,
+    `> linkedin  : ${profile.linkedin.replace("https://www.", "").replace("https://", "")}`,
+    "> connection established. say hello 👋",
+  ])[0];
+
+  const { displayed, done } = useTerminalTyper(lines);
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(profile.email).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center px-6"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.96 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-lg rounded-xl overflow-hidden shadow-2xl border border-[#2a2f36]"
+      >
+        <div className="flex items-center gap-2 px-4 py-3 bg-[#1c1f24]">
+          <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+          <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+          <span className="w-3 h-3 rounded-full bg-[#28C840]" />
+          <span className="ml-3 font-mono text-xs text-[#8b949e]">sagar@portfolio: ~/contact</span>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="ml-auto text-[#8b949e] hover:text-white transition-colors"
+          >
+            <X size={14} />
+          </button>
+        </div>
+
+        <div className="bg-[#0d1117] px-5 py-5 font-mono text-[13px] leading-relaxed min-h-[220px]">
+          {displayed.map((line, i) => (
+            <p
+              key={i}
+              className={line.startsWith("$") ? "text-[#58a6ff]" : "text-[#c9d1d9]"}
+            >
+              {line}
+              {!done && i === displayed.findIndex((l, idx) => l.length < lines[idx].length) && (
+                <span className="inline-block w-[7px] h-[14px] bg-[#c9d1d9] ml-0.5 align-middle animate-pulse" />
+              )}
+            </p>
+          ))}
+
+          <AnimatePresence>
+            {done && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
+                className="flex flex-wrap gap-2 mt-4"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#21262d] text-[#c9d1d9] text-xs hover:bg-[#30363d] transition-colors"
+                >
+                  <Mail size={13} /> {copied ? "Copied!" : "Copy email"}
+                </motion.button>
+                <motion.a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#21262d] text-[#c9d1d9] text-xs hover:bg-[#30363d] transition-colors"
+                >
+                  <Github size={13} /> GitHub
+                </motion.a>
+                <motion.a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#21262d] text-[#c9d1d9] text-xs hover:bg-[#30363d] transition-colors"
+                >
+                  <Linkedin size={13} /> LinkedIn
+                </motion.a>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -372,6 +691,7 @@ function Eyebrow({ children }) {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const typed = useTypewriter(PROFILE.roles);
 
   useEffect(() => {
@@ -393,6 +713,7 @@ export default function App() {
   const navLinks = [
     { href: "#about", label: "About" },
     { href: "#skills", label: "Skills" },
+    { href: "#experience", label: "Experience" },
     { href: "#projects", label: "Projects" },
     { href: "#education", label: "Education" },
     { href: "#contact", label: "Contact" },
@@ -430,12 +751,12 @@ export default function App() {
                 {l.label}
               </a>
             ))}
-            <a
-              href={`mailto:${PROFILE.email}`}
+            <button
+              onClick={() => setContactOpen(true)}
               className="text-sm font-medium px-4 py-2 rounded-full bg-[#14171A] text-white hover:bg-[#2451E0] transition-colors"
             >
               Get in touch
-            </a>
+            </button>
           </nav>
 
           <button
@@ -459,9 +780,24 @@ export default function App() {
                 {l.label}
               </a>
             ))}
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                setContactOpen(true);
+              }}
+              className="text-sm font-medium text-left text-[#2451E0]"
+            >
+              Get in touch
+            </button>
           </div>
         )}
       </header>
+
+      <AnimatePresence>
+        {contactOpen && (
+          <TerminalContactModal profile={PROFILE} onClose={() => setContactOpen(false)} />
+        )}
+      </AnimatePresence>
 
       {/* Hero */}
       <Section id="top" className="pt-20 pb-24 md:pt-28 md:pb-32">
@@ -534,9 +870,10 @@ export default function App() {
       {/* Skills */}
       <Section id="skills" className="py-20 border-t border-[#E4E7EB] bg-[#F6F7F9]">
         <Eyebrow>Skills</Eyebrow>
-        <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
+        <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-2">
           What I work with
         </h2>
+        <p className="text-xs text-[#5B6472] mb-8">Tap or hover a skill for details.</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {SKILLS.map((s, i) => (
             <motion.div
@@ -559,8 +896,17 @@ export default function App() {
         </div>
       </Section>
 
+      {/* Experience */}
+      <Section id="experience" className="py-20 border-t border-[#E4E7EB]">
+        <Eyebrow>Experience</Eyebrow>
+        <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
+          What I've been doing
+        </h2>
+        <ExperienceSection />
+      </Section>
+
       {/* Projects */}
-      <Section id="projects" className="py-20 border-t border-[#E4E7EB]">
+      <Section id="projects" className="py-20 border-t border-[#E4E7EB] bg-[#F6F7F9]">
         <Eyebrow>Projects</Eyebrow>
         <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
           Things I've built
@@ -575,13 +921,14 @@ export default function App() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               whileHover={{ y: -6 }}
-              className="group block p-6 rounded-2xl border border-[#E4E7EB] bg-white hover:border-[#2451E0] hover:shadow-[0_4px_20px_-4px_rgba(36,81,224,0.15)] transition-colors"
+              whileTap={{ scale: 0.98 }}
+              className="group block p-6 rounded-2xl border border-[#E4E7EB] bg-white active:border-[#2451E0] hover:border-[#2451E0] hover:shadow-[0_4px_20px_-4px_rgba(36,81,224,0.15)] transition-colors"
             >
               <div className="flex items-start justify-between mb-3">
                 <Code2 className="text-[#2451E0]" size={20} />
                 <ExternalLink
                   size={16}
-                  className="text-[#5B6472] opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="text-[#5B6472] opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                 />
               </div>
               <h3 className="font-display font-semibold text-lg mb-2">{p.title}</h3>
@@ -604,7 +951,7 @@ export default function App() {
       </Section>
 
       {/* Education */}
-      <Section id="education" className="py-20 border-t border-[#E4E7EB] bg-[#F6F7F9]">
+      <Section id="education" className="py-20 border-t border-[#E4E7EB]">
         <Eyebrow>Education</Eyebrow>
         <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
           Where I've studied
@@ -622,7 +969,7 @@ export default function App() {
       </Section>
 
       {/* Contact */}
-      <Section id="contact" className="py-24 border-t border-[#E4E7EB]">
+      <Section id="contact" className="py-24 border-t border-[#E4E7EB] bg-[#F6F7F9]">
         <Eyebrow>Contact</Eyebrow>
         <h2 className="font-display font-semibold text-3xl md:text-4xl tracking-tight mb-4 max-w-lg">
           Let's talk about an opportunity.
