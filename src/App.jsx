@@ -212,6 +212,37 @@ const EXPERIENCE = [
   },
 ];
 
+const CERTIFICATES = [
+  {
+    title: "Google Analytics Certification",
+    issuer: "Google Analytics Academy",
+    date: "sep 2023",
+    skills: ["Google Analytics", "Data Analysis", "Digital Marketing"],
+    driveLink: "https://drive.google.com/file/d/1-kNEK0dps5dKqbCz1CUE1utwtsZvtW5t/view?usp=drivesdk",
+  },
+  {
+    title: "Edunet Artificial Intelligence & Machine Learning Explorer",
+    issuer: "Edunet Foundation × IBM SkillsBuild",
+    date: "Jun 2025 – Aug 2025",
+    skills: ["LangChain", "scikit-learn", "GCP", "Azure"],
+    driveLink: "https://drive.google.com/file/d/1g-vR_WlLt4F5EfAuC-9s7rBgTYki7szb/view?usp=drivesdk",
+  },
+  {
+    title: "Gen AI Powered Data Analytics Job Simulation",
+    issuer: "Google × Edunet Foundation",
+    date: "Jul 2025 – Aug 2025s",
+    skills: ["React", "Node.js", "MongoDB"],
+    driveLink: "https://www.skills.google/public_profiles/226f929d-0e37-46de-9cbf-b1f00bca5d0b/badges/5015262",
+  },
+  {
+    title: "Full-Stack Developer — Internship",
+    issuer: "JobSense × MIT",
+    date: "Jul 2024 – Aug 2024",
+    skills: ["React", "Node.js", "MongoDB"],
+    driveLink: "https://drive.google.com/file/d/1zwUnjOTkKqPQZb6B9qrh1hzrWrFuC-zK/view?usp=drivesdk",
+  },
+];
+
 const PROJECTS = [
   {
     title: "Smart Student Management System",
@@ -539,6 +570,106 @@ function ExperienceSection() {
   );
 }
 
+// Extracts the Drive file id from any share-link format and returns a
+// directly-embeddable thumbnail URL (works for images + PDFs).
+// NOTE: each file must be shared as "Anyone with the link can view" on Drive,
+// otherwise the thumbnail request fails and the fallback icon is shown instead.
+function getDriveThumbnail(link) {
+  const match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  const id = match ? match[1] : null;
+  return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w1000` : null;
+}
+
+function CertificateCard({ cert, index }) {
+  const thumb = getDriveThumbnail(cert.driveLink);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      whileHover={{ y: -4 }}
+      className="group rounded-2xl border border-[#E4E7EB] bg-white overflow-hidden shadow-[0_2px_10px_-4px_rgba(20,23,26,0.08)] hover:shadow-[0_16px_36px_-12px_rgba(20,23,26,0.18)] transition-shadow"
+    >
+      <div className="relative aspect-[4/3] bg-[#F3F5F9] overflow-hidden">
+        {thumb ? (
+          <img
+            src={thumb}
+            alt={cert.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              e.currentTarget.nextSibling.style.display = "flex";
+            }}
+          />
+        ) : null}
+        <div
+          style={{ display: thumb ? "none" : "flex" }}
+          className="absolute inset-0 items-center justify-center text-[#5B6472]"
+        >
+          <FileCheck size={32} />
+        </div>
+
+        <a
+          href={cert.driveLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur flex items-center justify-center text-[#14171A] opacity-0 group-hover:opacity-100 transition-opacity"
+          aria-label="Open certificate"
+        >
+          <ExternalLink size={16} />
+        </a>
+      </div>
+
+      <div className="p-5">
+        <p className="font-mono text-xs text-[#5B6472] mb-1">{cert.date}</p>
+        <h3 className="font-display font-semibold text-base leading-snug mb-1">
+          {cert.title}
+        </h3>
+        <p className="text-sm text-[#5B6472] mb-3">{cert.issuer}</p>
+
+        <div className="flex flex-wrap gap-2 mb-4">
+          {cert.skills.map((s) => (
+            <span
+              key={s}
+              className="text-xs px-2.5 py-1 rounded-full bg-[#E8EDFC] text-[#2451E0] font-medium"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+
+        <a
+          href={cert.driveLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#2451E0] hover:gap-2.5 transition-all"
+        >
+          View Certificate <ArrowUpRight size={14} />
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+function CertificatesSection() {
+  return (
+    <Section id="certificates" className="py-20 border-t border-[#E4E7EB] bg-[#F6F7F9]">
+      <Eyebrow>Credentials</Eyebrow>
+      <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
+        Certificates
+      </h2>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {CERTIFICATES.map((cert, i) => (
+          <CertificateCard key={cert.title} cert={cert} index={i} />
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 function useTerminalTyper(lines, speed = 16, lineDelay = 260) {
   const [lineIdx, setLineIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
@@ -714,6 +845,7 @@ export default function App() {
     { href: "#about", label: "About" },
     { href: "#skills", label: "Skills" },
     { href: "#experience", label: "Experience" },
+    { href: "#certificates", label: "Certificates" },
     { href: "#projects", label: "Projects" },
     { href: "#education", label: "Education" },
     { href: "#contact", label: "Contact" },
@@ -905,8 +1037,11 @@ export default function App() {
         <ExperienceSection />
       </Section>
 
+      {/* Certificates */}
+      <CertificatesSection />
+
       {/* Projects */}
-      <Section id="projects" className="py-20 border-t border-[#E4E7EB] bg-[#F6F7F9]">
+      <Section id="projects" className="py-20 border-t border-[#E4E7EB]">
         <Eyebrow>Projects</Eyebrow>
         <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
           Things I've built
@@ -951,7 +1086,7 @@ export default function App() {
       </Section>
 
       {/* Education */}
-      <Section id="education" className="py-20 border-t border-[#E4E7EB]">
+      <Section id="education" className="py-20 border-t border-[#E4E7EB] bg-[#F6F7F9]">
         <Eyebrow>Education</Eyebrow>
         <h2 className="font-display font-semibold text-2xl md:text-3xl tracking-tight mb-8">
           Where I've studied
@@ -969,7 +1104,7 @@ export default function App() {
       </Section>
 
       {/* Contact */}
-      <Section id="contact" className="py-24 border-t border-[#E4E7EB] bg-[#F6F7F9]">
+      <Section id="contact" className="py-24 border-t border-[#E4E7EB]">
         <Eyebrow>Contact</Eyebrow>
         <h2 className="font-display font-semibold text-3xl md:text-4xl tracking-tight mb-4 max-w-lg">
           Let's talk about an opportunity.
