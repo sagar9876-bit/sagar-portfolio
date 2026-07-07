@@ -169,7 +169,7 @@ const SKILLS = [
 
 const EXPERIENCE = [
   {
-    company: "Technex'25 IIT (BHU)-Varanasi (Internship) with Robokwik",
+    company: "Technex'25 IIT (BHU)-Varanasi(Internship)",
     role: "Full-Stack & AI Developer",
     duration: "April 2025 - June 2025 (Duration: 3 months)",
     summary:
